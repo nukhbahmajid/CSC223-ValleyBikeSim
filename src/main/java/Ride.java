@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 public class Ride {
 		private int userID; 
 		private int fromStationID;
@@ -6,12 +7,15 @@ public class Ride {
 		private Date startTime;
 		private Date endTime;
 		
+		private long rideDuration;
+		
 		public Ride(int userID, int fromStationID, int toStationID, Date startTime, Date endTime) {
 			this.userID = userID;
 			this.fromStationID = fromStationID;
 			this.toStationID = toStationID;
 			this.startTime = startTime;
 			this.endTime = endTime;
+			calculateDuration();
 		} 
 		
 		/**
@@ -38,6 +42,10 @@ public class Ride {
 			return this.endTime;
 		}
 		
+		public long getRideDuration() {
+			return this.rideDuration;
+		}
+		
 		
 		/**
 		 * Setters for the ride object attributes
@@ -62,6 +70,16 @@ public class Ride {
 		
 		public void setEndTime(Date newEndTime) {
 			this.endTime = newEndTime;
+		}
+		
+		
+		/**
+		 * Calculate the duration of the ride 
+		 */
+		private void calculateDuration() {
+			long duration = this.endTime.getTime() - this.startTime.getTime();
+			long intoMinutes = TimeUnit.MINUTES.convert(duration, TimeUnit.MILLISECONDS);
+			this.rideDuration = intoMinutes;
 		}
 		
 	}
