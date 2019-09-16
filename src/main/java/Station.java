@@ -3,19 +3,19 @@ public class Station {
 	private int ID;
 	private String name;
 	private int bikes;
-	private int pedelacs;
+	private int pedelecs;
 	private int availableDocks;
 	private int mReq;
 	private int capacity;
 	private boolean hasKiosk;
 	private String address;
 	
-	public Station(int ID, String name, int bikes, int pedelacs, int aDocks, int mReq, int capacity,
+	public Station(int ID, String name, int bikes, int pedelecs, int aDocks, int mReq, int capacity,
 			boolean hasKiosk, String address) {
 		this.ID = ID; 
 		this.name = name;
 		this.bikes = bikes; 
-		this.pedelacs = pedelacs;
+		this.pedelecs = pedelecs;
 		this.availableDocks = aDocks;
 		this.mReq = mReq;
 		this.capacity = capacity;
@@ -35,8 +35,8 @@ public class Station {
 		this.bikes = bikes;
 	}
 	
-	public void setPedelacs(int pedelacs) {
-		this.pedelacs = pedelacs;
+	public void setPedelecs(int pedelecs) {
+		this.pedelecs = pedelecs;
 	}
 	
 	public void setAvailableDocks(int availableDocks) {
@@ -72,8 +72,8 @@ public class Station {
 		return this.bikes;
 	}
 	
-	public int getPedelacs() {
-		return this.pedelacs;
+	public int getPedelecs() {
+		return this.pedelecs;
 	}
 	
 	public int getAvailableDocks() {
@@ -94,6 +94,13 @@ public class Station {
 	
 	public String getAddress() {
 		return this.address;
+	}
+	
+	
+	public void printStation() {
+		System.out.println(this.ID + "\t" + this.bikes + "\t" + this.pedelecs + "\t"
+				+ this.availableDocks + "\t" + this.mReq + "\t" + this.capacity + "\t"
+				+ this.hasKiosk + "\t" + this.name + " - " + this.address);
 	}
 	
 
