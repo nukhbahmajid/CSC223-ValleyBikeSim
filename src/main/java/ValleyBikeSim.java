@@ -75,7 +75,6 @@ public class ValleyBikeSim {
 				stationsMap.put(station.getID(), station);
 			}
 			
-			stationDataReader.close();
 		
 		} 
 		catch(Exception e) {
@@ -113,8 +112,7 @@ public class ValleyBikeSim {
 			int averageDuration = totalDuration / ridesList.size();
 			System.out.println("The ride list contains " + ridesList.size() + " rides and the average ride time is " + averageDuration + " minutes.\n");
 			
-			
-			rideDataReader.close();
+		
 		} 
 		
 		catch (Exception e) {
@@ -295,7 +293,6 @@ public class ValleyBikeSim {
 			 */
 			newStationsList.add(newStation);
 			
-			userInput.close();
 			break;	
 		}
 		return;	
@@ -511,7 +508,7 @@ public class ValleyBikeSim {
 			endStation.setPedelecs(endStation.getPedelecs()+1);
 		}
 		endStation.setAvailableDocks(endStation.getAvailableDocks()-1);
-		input.close();
+
 	}
 
 	
@@ -610,7 +607,6 @@ public class ValleyBikeSim {
 
 				if(input.compareTo("0") == 0) {
 					System.out.println("\nThank you for using Valley Bike Simulator!");
-					userInput.close();
 					break;
 				} else if(input.compareTo("1") == 0) {
 					printStationList();	
