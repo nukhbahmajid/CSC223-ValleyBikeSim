@@ -48,7 +48,8 @@ public class ValleyBikeSim {
 	
 	
 	/**
-	 * Read in all the data files and store them in appropriate data structures
+	 * Read in all the data files and store them in appropriate data structures. A TreeMap was used so that
+	 * when the list of stations is printed to the screen all the IDs for the stations would be ordered. 
 	 */
 	public static void readData() {
 		try {
@@ -61,7 +62,7 @@ public class ValleyBikeSim {
 			stationsList = new ArrayList<>();
 			stationsMap = new TreeMap<>();
 			
-			// how to read the CSV data row wise:
+			/* to read the CSV data row wise: */
 			allStationEntries = stationDataReader.readAll();
 			System.out.println("");
 			int counter = 0;
@@ -130,7 +131,13 @@ public class ValleyBikeSim {
 		}
 	}
 	
-	
+	/**
+	 * Helper function to pass a boolean and change it to a string of "0" if false
+	 * and "1" if true respectively so that it can be used to make a new station into a corresponding 
+	 * row to be saved to the CSV. used the helper function in saveStationList() method.
+	 * @param b - boolean
+	 * @return - corresponding string of either "0" or "1". 
+	 */
 	public static String fromBool(Boolean b) {
 		if(b == true) {
 			return "1";
@@ -139,6 +146,10 @@ public class ValleyBikeSim {
 		}
 	}
 
+	/**
+	 * Create a list of all Station IDs. Used to assist the recordRide() function. 
+	 * @return - a list of all Station IDs. 
+	 */
 	public static List<Integer> stationID() {
 		stationId = new ArrayList<>();
 		
@@ -149,6 +160,11 @@ public class ValleyBikeSim {
 		return stationId;
 	}
 	
+	/**
+	 * Create a list of Stations that still have docks available for parking. Used to assist the
+	 * recordRide() function. 
+	 * @return - list of stations that have available docks. 
+	 */
 	public static List<Station> availableStation() {
 		stationWithAvailableDocks = new ArrayList<>();
 		
