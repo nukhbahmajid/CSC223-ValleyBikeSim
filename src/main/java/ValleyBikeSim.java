@@ -235,6 +235,7 @@ public class ValleyBikeSim {
 				}
 			} catch(NumberFormatException e) {
 				System.out.println("Invalid input. Please start over.");
+				continue;
 			}
 			
 			System.out.println("Station Name: ");
@@ -256,6 +257,7 @@ public class ValleyBikeSim {
 				}
 			} catch(NumberFormatException e) {
 				System.out.println("Invalid input. Please start over.");
+				continue;
 			}
 			
 			
@@ -276,6 +278,7 @@ public class ValleyBikeSim {
 				}
 			} catch(NumberFormatException e) {
 				System.out.println("Invalid input. Please start over.");
+				continue;
 			}
 			
 			
@@ -294,6 +297,7 @@ public class ValleyBikeSim {
 				}
 			} catch(NumberFormatException e) {
 				System.out.println("Invalid input. Please start over.");
+				continue;
 			}
 			
 			newStation.setAvailableDocks(newStation.getCapacity() - (newStation.getBikes() + newStation.getPedelecs()));
@@ -642,7 +646,9 @@ public class ValleyBikeSim {
 		} 
 		
 		catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("\n" + e.getMessage());
+			System.out.println("Please enter a valid data file path.\n");
+			//e.printStackTrace();
 		}
 	}
 
@@ -740,6 +746,7 @@ public class ValleyBikeSim {
 					addStation();
 				} else if(input.equals("3")) {
 					saveStationList();
+					System.out.println("\nStations successfully added to the CSV data file!\n");
 				} else if(input.equals("4")) {
 					recordRide();
 				} else if(input.equals("5")) {
