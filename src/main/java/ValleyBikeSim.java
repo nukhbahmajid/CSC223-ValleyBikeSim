@@ -3,6 +3,7 @@ import java.util.concurrent.TimeUnit;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -26,6 +27,11 @@ public class ValleyBikeSim {
 	public static List<Station> stationWithAvailableDocks;
 	public static List<Integer> stationId;
 	
+	
+	public  static FileWriter csvWriter;
+	public static CSVWriter writer;
+
+	
 	/**
 	 * Fields related to rides.
 	 */
@@ -38,8 +44,6 @@ public class ValleyBikeSim {
 	 * time the saveStationList() function is called. 
 	 */
 	public static Station newStation;
-	public static List<Station> newStationsList = new ArrayList<>();
-	
 	
 	
 	
@@ -48,7 +52,7 @@ public class ValleyBikeSim {
 	 */
 	public static void readData() {
 		try {
-			String stationData = "/Users/nukhbahmajid/Desktop/Smith_College/Junior_Year/CSC223/CSC223-ValleyBikeSim/data-files/station-data.csv";
+			String stationData = "data-files/station-data.csv";
 
 			
 			CSVReader stationDataReader = new CSVReader(new FileReader(stationData));
@@ -83,40 +87,23 @@ public class ValleyBikeSim {
 	}
 	
 	
+	/*
+	 *
+	 * ********* HELPER FUNCTIONS START HERE: ***********
+	 *
+	 */
 	
-	public static void resolveRideData(String ridesFileName) {
-		String rideData = "/Users/nukhbahmajid/Desktop/Smith_College/Junior_Year/CSC223/CSC223-ValleyBikeSim/data-files/" + ridesFileName;
-		
-		try {
-			CSVReader rideDataReader = new CSVReader(new FileReader(rideData));
-			ridesList = new ArrayList<>();
-			
-			allRidesEntries = rideDataReader.readAll();
-			System.out.println("");
-			
-			int counter = 0;
-			for(String[] array : allRidesEntries) {
-				if(counter == 0) {
-					
-				} else {
-					ridesList.add(new Ride(Integer.parseInt(array[0]), Integer.parseInt(array[1]),
-							Integer.parseInt(array[2]), toDate(array[3]), toDate(array[4])));
-				}
-				counter++;
 	
-			} 
-			int totalDuration = 0;
-			for(Ride ride : ridesList) {
-				totalDuration += ride.getRideDuration();
-			}
-			int averageDuration = totalDuration / ridesList.size();
-			System.out.println("The ride list contains " + ridesList.size() + " rides and the average ride time is " + averageDuration + " minutes.\n");
-			
-		
-		} 
-		
-		catch (Exception e) {
-			e.printStackTrace();
+	/**
+	 * Interpret the boolean given as argument and return a number.
+	 * @param b - a boolean argument to be interpreted as a number
+	 * @return a number: 0 if boolean is false or 1 if boolean is true
+	 */
+	public static int boolToInt(boolean b) {
+		if(b) {
+			return 1;
+		} else {
+			return 0;
 		}
 	}
 	
@@ -143,12 +130,52 @@ public class ValleyBikeSim {
 		}
 	}
 	
+	
+	public static String fromBool(Boolean b) {
+		if(b == true) {
+			return "1";
+		} else {
+			return "0";
+		}
+	}
+
+	public static List<Integer> stationID() {
+		stationId = new ArrayList<>();
+		
+		for (Station station : stationsList) {
+			stationId.add(station.getID());
+		}
+		
+		return stationId;
+	}
+	
+	public static List<Station> availableStation() {
+		stationWithAvailableDocks = new ArrayList<>();
+		
+		for (Station station : stationsList) {
+			if (station.getAvailableDocks() > 0) {
+				stationWithAvailableDocks.add(station);
+			}
+		}
+		
+		return stationWithAvailableDocks;
+	}
+	
+	
+	/*
+	 *
+	 * ********* HELPER FUNCTIONS END HERE: ***********
+	 *
+	 */
+	
+	
+	
 	/**
 	 * Prints the main menu for the Valley Bike Simulator to the console.
 	 */
 	public static void printMainMenu() {
 		System.out.println("Please choose from one of the following menu options:\n"
-				+ "0. Quit Program.\n1. View station list.\n2. Add station list.\n3. Save station list.\n"
+				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
 				+ "4. Record ride.\n5. Resolve ride data.\n6. Equalize stations.");
 	} 
 	
@@ -164,8 +191,7 @@ public class ValleyBikeSim {
 		}
 		System.out.println("");
 	
-	}
-	
+	}	
 	
 	/**
 	 * Create a station as prompted by the user.
@@ -274,6 +300,7 @@ public class ValleyBikeSim {
 			String inputAddressString = userInput.nextLine();
 			newStation.setAddress(inputAddressString);
 			
+			
 			/*
 			 * Assuming a new station doesn't require maintenance requests and hence setting them to 0.
 			 */
@@ -282,48 +309,98 @@ public class ValleyBikeSim {
 			/*
 			 * Printing all the specifications of the station designed by the user:
 			 */
-			System.out.println("This is the new station you will be adding to the list:\n" + "\nID: " + newStation.getID() + "\nName: " + 
+			System.out.println("This new station was added to the list:\n" + "\nID: " + newStation.getID() + "\nName: " + 
 			newStation.getName() + "\nCapacity: " + newStation.getCapacity() + 
 				"\nNumber of Bikes: " + newStation.getBikes() + "\nNumber of Pedelecs: " + newStation.getPedelecs() + "\nNumber of Available Docks: " + 
 			newStation.getAvailableDocks() + "\nNumber of Maintenance Requests: " + newStation.getMaintainenceReq() + "\nHas a kiosk: " + 
 				newStation.getHasKiosk() + "\nAddress: " + newStation.getAddress() + "\n");
 			
+			
 			/*
-			 * Save this newly created station to the new stations list.
+			 * Save this newly created station to the stations list.
 			 */
-			newStationsList.add(newStation);
+			stationsList.add(newStation);	
+			stationsMap.put(newStation.getID(), newStation);
+			System.out.println("Station successfully added. Choose 'View station list' in menu to view the station.\n");
 			
 			break;	
 		}
 		return;	
 	}
 	
-	public static void saveStation() {
-		
-	}
-	
-	public static List<Integer> stationID() {
-		stationId = new ArrayList<>();
-		
-		for (Station station : stationsList) {
-			stationId.add(station.getID());
+	/**
+	 * Save the updated station list to the CSV file, by overwriting all the entries and adding new entries for the new stations. 
+	 */
+	public static void saveStationList() {
+	     
+		try {
+			  //overwrites existing file with new data
+			  csvWriter = new FileWriter("data-files/station-data.csv");
+			  writer = new CSVWriter(csvWriter);
+		      String [] record = "ID,Name,Bikes,Pedelacs,Available Docks,Maintainence Request,Capacity,Kiosk,Address".split(",");
+
+		      writer.writeNext(record);
+
+		      writer.close();
+		      
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		return stationId;
+		//loops through and saves all stations
+		for (Station station : stationsList) {
+			saveAll(station);
+		}
 	}
 	
-	public static List<Station> availableStation() {
-		stationWithAvailableDocks = new ArrayList<>();
-		
-		for (Station station : stationsList) {
-			if (station.getAvailableDocks() > 0) {
-				stationWithAvailableDocks.add(station);
+	/**
+	 * Ancillary function to assist the saveStationList() function.
+	 */
+	private static void saveAll(Station station) {
+		try {
+			csvWriter = new FileWriter("data-files/station-data.csv",true);
+
+			//adding all the station details into the csv
+			csvWriter.append(Integer.toString(station.getID()));
+		    csvWriter.append(',');
+			csvWriter.append(station.getName());
+			csvWriter.append(',');
+			csvWriter.append(Integer.toString(station.getBikes()));
+			csvWriter.append(',');
+			csvWriter.append(Integer.toString(station.getPedelecs()));
+			csvWriter.append(',');
+			csvWriter.append(Integer.toString(station.getAvailableDocks()));
+			csvWriter.append(',');
+			csvWriter.append(Integer.toString(station.getMaintainenceReq()));
+			csvWriter.append(',');
+			csvWriter.append(Integer.toString(station.getCapacity()));
+			csvWriter.append(',');
+			csvWriter.append(fromBool(station.getHasKiosk()));
+			csvWriter.append(',');
+			csvWriter.append(station.getAddress());
+			
+			
+			csvWriter.append("\n");
+
+
+
+			csvWriter.flush();
+			csvWriter.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 			}
-		}
-		
-		return stationWithAvailableDocks;
-	}
 	
+
+	/**
+	 * When the user tries to record a new ride, do the following: 
+	 * 1. Make sure that the ride is valid by accounting all exceptions. 
+	 * 2. Ask the user which station did they take the ride from, what vehicle they used, and which station was their end destination. 
+	 * 3. Update the values of the stations in stationsList after these rides were recorded.
+	 * (Note: this is different from saving the station list, which manages to write to the CSV file itself.)
+	 */
 	public static void recordRide() {
 		Scanner input = new Scanner(System.in);
 		boolean error = true;
@@ -510,8 +587,53 @@ public class ValleyBikeSim {
 		endStation.setAvailableDocks(endStation.getAvailableDocks()-1);
 
 	}
-
 	
+	/**
+	 * Manages to read the ride data, record all the rides in the ridesList and then calculates the average
+	 * ride duration and displays the message informing the user how many rides there were and what the average 
+	 * duration was for the whole ride data.
+	 * @param ridesFileName - the string specifying the name and extension of the ride data.
+	 */
+	public static void resolveRideData(String ridesFileName) {
+		String rideData = "data-files/" + ridesFileName;
+		
+		try {
+			CSVReader rideDataReader = new CSVReader(new FileReader(rideData));
+			ridesList = new ArrayList<>();
+			
+			allRidesEntries = rideDataReader.readAll();
+			System.out.println("");
+			
+			int counter = 0;
+			for(String[] array : allRidesEntries) {
+				if(counter == 0) {
+					
+				} else {
+					ridesList.add(new Ride(Integer.parseInt(array[0]), Integer.parseInt(array[1]),
+							Integer.parseInt(array[2]), toDate(array[3]), toDate(array[4])));
+				}
+				counter++;
+	
+			} 
+			int totalDuration = 0;
+			for(Ride ride : ridesList) {
+				totalDuration += ride.getRideDuration();
+			}
+			int averageDuration = totalDuration / ridesList.size();
+			System.out.println("The ride list contains " + ridesList.size() + " rides and the average ride time is " + averageDuration + " minutes.\n");
+			
+		
+		} 
+		
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * This function manages to equally divide all the vehicles among all the stations to avoid some stations to be 
+	 * over-occupied and some stations to be under-occupied. 
+	 */
 	public static void equalizeStations() {	
         int totalBikes = 0;
 		for (Station station : stationsList) {
@@ -580,21 +702,9 @@ public class ValleyBikeSim {
 	}
 	
 	
-	
 	/**
-	 * Interpret the boolean given as argument and return a number.
-	 * @param b - a boolean argument to be interpreted as a number
-	 * @return a number: 0 if boolean is false or 1 if boolean is true
+	 * Initializes our Valley Bike Simulator. 
 	 */
-	public static int boolToInt(boolean b) {
-		if(b) {
-			return 1;
-		} else {
-			return 0;
-		}
-	}
-	
-	
 	public static void main(String[] args) {
 		System.out.println("Welcome to the ValleyBike Simulator.");
 		readData();
@@ -613,7 +723,7 @@ public class ValleyBikeSim {
 				} else if(input.equals("2")) {
 					addStation();
 				} else if(input.equals("3")) {
-					saveStation();
+					saveStationList();
 				} else if(input.equals("4")) {
 					recordRide();
 				} else if(input.equals("5")) {
